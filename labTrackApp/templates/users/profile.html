@@ -1,0 +1,19 @@
+{% extends "common/base.html" %}
+{% block content %}
+    <div class="container">
+        <h3 class="card-title">{{ object.username }}'s Profile</h3>
+        <p class="text-muted">{{ object.email }}</p>
+        <p class="card-text">{{ object.role }}</p>
+        {% if request.user == object %}
+        <div class="mt-6 flex space-x-3">
+            <a class="px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-black bg-green-600 hover:bg-green-700 focus:outline-none" href="{% url 'profile-edit' pk=object.pk %}">
+                <i class="fas fa-pencil-alt"></i> Edit Profile
+            </a>
+            
+            <a href="{% url 'profile-delete' pk=object.pk %}" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-red-600 hover:bg-red-700 focus:outline-none" title="Delete Profile">
+                <i class="fas fa-trash-alt"></i> Delete Account
+            </a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

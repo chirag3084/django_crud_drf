@@ -1,0 +1,104 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block title %}Instruments{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Instruments</h2>
+        {% if user.is_authenticated %}
+            <a href="{% url "instrument-add" %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Register Instrument
+            </a>
+        {% endif %}
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for instrument in instruments %}
+        <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100">
+            <div class="flex justify-between items-start mb-3 border-b pb-3">
+                
+                <!-- Instrument Name and S/N -->
+                <h3 class="text-xl font-bold text-gray-800 leading-snug">
+                    {{ instrument.name }}
+                    <span class="block text-sm font-medium text-indigo-500">
+                        S/N: {{ instrument.serial_number }}
+                    </span>
+                </h3>
+                
+                <!-- Status Badge -->
+                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    {% if instrument.status == 'Operational' %}bg-green-100 text-green-800
+                    {% elif instrument.status == 'Under Maintenance' %}bg-red-100 text-red-800
+                    {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                    {{ instrument.status }}
+                </span>
+            </div>
+
+            <!-- Key Details Section -->
+            <ul class="space-y-2 text-sm text-gray-600 mb-4">
+                <li>
+                    <span class="font-semibold text-gray-700">Brand/Model:</span> 
+                    {{ instrument.brand }} - {{ instrument.model }}
+                </li>
+                <li>
+                    <span class="font-semibold text-gray-700">Location:</span> 
+                    {{ instrument.location|default:"N/A" }}
+                </li>
+                
+                <!-- ORM Annotated Field Display -->
+                <li>
+                    <span class="font-semibold text-gray-700">Total Maintenance Cost:</span> 
+                    <span class="text-lg font-extrabold text-red-600">
+                        ${{ instrument.total_maintenance_cost|default:"0.00" }}
+                    </span>
+                </li>
+            </ul>
+
+            <!-- Details Button -->
+            <a href="{% url "instrument-details" pk=instrument.pk %}" 
+               class="block w-full text-center mt-4 px-4 py-2 font-medium rounded-lg shadow-md hover:bg-indigo-600 transition duration-150 transform hover:scale-[1.02]">
+                View Details
+            </a>
+
+        </div>
+        {% empty %}
+            <!-- Handles the case where the list is empty (e.g., after filtering) -->
+            <div class="col-span-full bg-white p-8 rounded-xl shadow-md">
+                <p class="text-center text-lg text-gray-500">
+                    No instruments available matching your current search or filter criteria.
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %} 

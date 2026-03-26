@@ -1,0 +1,68 @@
+{% extends 'common/base.html' %}
+
+{% block title %}Details: {{ instrument.name }}{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mx-auto max-w-lg p-2 mt-4">
+    
+    <!-- Header & Action Buttons -->
+    <div class="flex justify-between items-center mb-4 pb-2 border-b">
+        <h2 class="text-xl font-bold text-gray-800">
+            {{ instrument.name }}
+        </h2>
+        
+        {% comment %} <div class="flex space-x-2">
+            <!-- Edit Button -->
+            <a href="#" 
+               class="text-xs text-blue-600 hover:text-blue-800">
+                Edit
+            </a>
+            <!-- Delete Button -->
+            <a href="#" 
+               class="text-xs text-red-600 hover:text-red-800">
+                Delete
+            </a>
+        </div> {% endcomment %}
+    </div>
+
+    <!-- Details List (Purely Linear) -->
+    <div class="text-sm space-y-2">
+        
+        <p><strong>Serial Number:</strong> {{ instrument.serial_number }}</p>
+        
+        <p><strong>Brand / Model:</strong> {{ instrument.brand }} / {{ instrument.model }}</p>
+
+        <p>
+            <strong>Current Status:</strong> 
+            <span class="font-semibold 
+                {% if instrument.status == 'Operational' %}text-green-600
+                {% elif instrument.status == 'Under Maintenance' %}text-red-600
+                {% else %}text-yellow-600{% endif %}">
+                {{ instrument.status }}
+            </span>
+        </p>
+        
+        <p><strong>Location:</strong> {{ instrument.location|default:"Unspecified" }}</p>
+        
+        <p><strong>Date Acquired:</strong> {{ instrument.date_acquired|date:"F j, Y" }}</p>
+
+        <p><strong>Recorded By:</strong> {{ instrument.recorded_by.username }}</p>
+
+        <div class="mt-4 pt-4 border-t">
+            <p class="font-bold mb-1">Description:</p>
+            <p class="text-gray-700 whitespace-pre-wrap">{{ instrument.description }}</p>
+        </div>
+
+        <a href={% url 'instrument-maintenance' pk=instrument.pk%} class="text-sm px-3 py-1 bg-blue-600 text-blue rounded-md hover:bg-blue-700 transition">
+                    Maintenance History
+        </a>
+    
+    <!-- Back Link -->
+    <div class="mt-6 pt-4 border-t text-right">
+        <a href="{% url 'instruments-page' %}" class="text-xs text-gray-500 hover:text-gray-700">
+            &larr; Back to Instruments List
+        </a>
+    </div>
+    
+</div>
+{% endblock %}
