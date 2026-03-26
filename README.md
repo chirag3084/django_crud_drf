@@ -4,4 +4,6 @@ Simple CRUD web app with basic front end and CRUD API endpoints using Django RES
 # Tech Stack
 Django, HTML
 
+# run locally :- https://localhost:8000
+
 # Happy Learning
